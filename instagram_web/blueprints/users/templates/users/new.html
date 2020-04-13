@@ -10,7 +10,8 @@
 {% block content %}
   <h1>New User</h1>
 
-  <form action="{{url_for('users.create')}}" method="POST">
+  <form action="{{url_for('users.create')}}" methods="POST">
+      <input type="hidden" name="csrf_token" value="{{csrf_token() }}"/>
       <label>Username</label>
       <input type="text" name ="username">
 
@@ -32,5 +33,5 @@
         <li>{{e}}</li>
     {% endfor %}
     </ul>
-    
+
 {% endblock %}

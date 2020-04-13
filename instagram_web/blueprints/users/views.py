@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, url_for, redirect, request
+from flask import Blueprint, render_template, url_for, redirect, request, abort
 from models.user import User
+from flask_login import login_required
+from flask_wtf.csrf import CSRFProtect
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -13,18 +15,24 @@ def new():
 @users_blueprint.route('/', methods=['POST'])
 def create():
     user = User.create(username=request.form["username"],
-    email=request.form["email"],
-    name=request.form["name"],
-    password=request.form["password"])
+    email=request.form.get["email"],
+    name=request.form.get["name"],
+    password=request.form.get["password"])
 
     if len(user.errors) > 0 :
         return render_template("users/new.html", errors = user.errors)
     else:
         return redirect(url_for("home"))
 
-@users_blueprint.route('/<username>', methods=["GET"])
-def show(username):
-    pass
+@users_blueprint.route('/<id>', methods=["GET"])
+@login_required
+def show(id):
+    user = User.get_by_id(id)
+    if current_user.id == user.id:
+        return render_template('users/show.html', user = user)
+    else:
+        abort(404)
+
 
 
 @users_blueprint.route('/', methods=["GET"])

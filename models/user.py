@@ -1,7 +1,8 @@
 from models.base_model import BaseModel
 import peewee as pw
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import re
+from flask_login import UserMixin
 
 
 def has_lower(word):
@@ -13,13 +14,13 @@ def has_upper(word):
 def has_special(word):
     return re.search("[\W]", word)
 
-class User(BaseModel):
+class User(BaseModel, UserMixin):
     name = pw.CharField(unique=False)
     username = pw.CharField(unique=True, null = False)
     email = pw.CharField (unique = True, null = False)
     password = pw.CharField (null = False)
 
-#specify whenever you safe the password it will convert it into hash
+#specify whenever you save the password it will convert it into hash
 
     def validate(self):
         existing_user = User.get_or_none(email=self.email)
@@ -42,4 +43,5 @@ class User(BaseModel):
         self.password = generate_password_hash(self.password)
 
 
-        
+
+
