@@ -5,9 +5,15 @@
 {% endblock %}
 
 {% block header %}
+
 {% endblock %}
 
 {% block content %}
+  
   <h1>Homepage</h1>
-
+  {% if current_user.is_authenticated %}
+    Hi {{ current_user.name }}!
+    {{current_user.email}}
+  {% endif %}
+ 
 {% endblock %}

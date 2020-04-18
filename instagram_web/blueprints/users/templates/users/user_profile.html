@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile page</title>
+    <script src="https://js.braintreegateway.com/web/dropin/1.22.1/js/dropin.min.js"></script>
+</head>
+<body>
+    {% extends "_layout.html" %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}
+    <h1>
+        Profile Page
+    </h1>
+   
+    <img style = "width: 100px; border-radius: 50%;" src = "{{user.profile_img_url}}">
+      
+    
+    <h3>Name : {{current_user.name}}</h3>
+    {% if current_user.name == user.name%}
+        <form action="{{url_for('users.edit', id = current_user.id)}}", method = "POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="update_type" value="update_name"/>
+            <button type = "submit" class  = "btn btn-info">Edit</button>
+        </form>
+        
+        <form action="{{url_for('users.edit', id = current_user.id)}}", method = "POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type = "hidden" name ="update_type" value = "update_profile_image"/>
+            <button type = "submit" class = "btn btn-info">Upload Profile Image</button>
+        </form>
+
+        <form action="{{url_for('images.index')}}">
+            <button type = "submit" class = "btn btn-info">Upload Images</button>
+        </form>
+    
+        <div class="card-deck">
+            {% for image in current_user.images %}
+            <div class = "col-sm-3">
+                <div class="card" >
+                    <img src="{{image.img_url}}" class="card-img-top" alt="..." >
+                    <button id = "donate" class = "btn btn-info" data-toggle="modal" data-target="#exampleModalScrollable">Donate</button>
+                  </div>
+            </div>      
+            {% endfor %}
+        </div>
+        <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalScrollableTitle">Donate</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form id = "payment-form" action = "{{url_for('users.checkout')}}" method = "POST">
+                  <div class="modal-body">
+                    <div id="dropin-wrapper">
+                      <div class="form-group">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type = "hidden" id = "payload_nonce" name = "paymentMethodNonce">
+                        <label for="donation_amount">Donation amount</label>
+                        <input type="number" min = "0" step = ".01" class="form-control" id="donation_amount" name = "donation_amount">
+                        
+                      </div>
+                      <div id="checkout-message"></div>
+                      <div id="dropin-container"></div>
+
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+                    <input type="submit" value = "Donate" class="btn btn-secondary" id="submit-button">
+                    
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+    {% else %}
+        <p>This profile picture is private.</p>
+    {% endif %}
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    
+    <script>
+        var button = document.querySelector('#submit-button');
+        let payment_form = document.getElementById('payment-form')
+        let payload_input = document.getElementById('payload_nonce')
+        braintree.dropin.create({
+          // tokenization key here
+          authorization: '{{client_token}}',
+          container: '#dropin-container'
+        }, function (createErr, instance) {
+          payment_form.addEventListener('submit', function (e) {
+            console.log('payment form submitted')
+            e.preventDefault()
+            instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+              payload_input.setAttribute("value", payload.nonce)
+              payment_form.submit()
+              console.log('payment form submitted')
+            });
+          });
+        });
+      </script>
+    
+    
+    
+    {% endblock %} 
+</body>
+</html>

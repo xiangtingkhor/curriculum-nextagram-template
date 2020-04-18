@@ -1,14 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Log In</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
     {% extends "_layout.html" %}
-   
     {% block content %}
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -22,24 +22,22 @@
     {% for error in errors if error|length > 0 %}
         <li>{{error}}</li>
     {% endfor %}
+    
+    
     <h1>
-        Sign up a new account
+        Log In
     </h1>
-    <form action = "{{url_for('users.create')}}" method = "POST">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <form action = "{{url_for('sessions.login_check')}}" method = "POST">
+        <input type = "hidden" name = "csrf_token" value = "{{csrf_token()}}"></input>
         <div class="form-group">
-            <label for="username_input">Username</label>
-            <input type="text" class="form-control" id="username_input" name = "username_input">
-        </div>
+            <label for="email_input">Email address</label>
+            <input type="email" class="form-control" id="email_input" name = "email_input" aria-describedby="emailHelp">
+          </div>
         <div class="form-group">
             <label for="password_input">Password</label>
             <input type="password" class="form-control" id="password_input" name = "password_input">
         </div>
-        <div class="form-group">
-          <label for="email_input">Email address</label>
-          <input type="email" class="form-control" id="email_input" name = "email_input" aria-describedby="emailHelp">
-          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
+        
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
