@@ -4,10 +4,11 @@ import peewee as pw
 from playhouse.hybrid import hybrid_property
 import os
 
+#need to import user to state where you get the ForeignKeyField
 class Images (BaseModel):
-    user = pw.ForeignKeyField(User, backref='images')
     img = pw.CharField()
-
+    user = pw.ForeignKeyField(User, backref='images')
+    
     @hybrid_property
     def img_url(self):
         from app import app

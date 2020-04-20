@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, abort
+from flask import Flask, Blueprint, render_template, request, flash, redirect, url_for, abort
 from models.user import User
 from models.donation import Donation
 from flask_login import current_user, login_user, login_required
@@ -8,6 +8,8 @@ import braintree
 import os
 from decimal import Decimal
 from instagram_web.util.email import send_message
+
+
 
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
@@ -43,7 +45,7 @@ def create():
     if user.save():
         flash(f"Account has been created successful")
         login_user(user)
-        return redirect(url_for('/newusername'))
+        return redirect(url_for('users.index'))
         
     else:
         return render_template('users/new.html', errors = user.errors)

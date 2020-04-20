@@ -14,10 +14,8 @@ def index():
 @images_blueprint.route('/receive-upload-images', methods = ["POST"])
 def create():
     file = request.files.get('upload_images')
-    print(file)
-    print(file.filename)
     result = upload(file)
-    print(result)
-    Images.create(user = current_user.id, img = result)
+    image =Images(img = result, user = current_user.id)
+    image.save()
 
     return redirect(url_for('users.show', username = current_user.name))

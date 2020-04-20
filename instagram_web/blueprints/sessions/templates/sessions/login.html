@@ -27,7 +27,7 @@
     <h1>
         Log In
     </h1>
-    <form action = "{{url_for('sessions.login_check')}}" method = "POST">
+     <form action = "{{url_for('sessions.login_check')}}" method = "POST">
         <input type = "hidden" name = "csrf_token" value = "{{csrf_token()}}"></input>
         <div class="form-group">
             <label for="email_input">Email address</label>

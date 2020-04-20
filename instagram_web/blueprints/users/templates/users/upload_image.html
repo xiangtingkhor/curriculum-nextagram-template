@@ -12,15 +12,14 @@
     <h1>
         Upload Profile Page
     </h1>
-    <h3>id : {{current_user.id}}</h3>
-    <h3>Current name:{{current_user.name}} </h3>
+    <h3>Current name : {{current_user.name}} </h3> </br>
     
-
+<!--enctype is needed to tell the form how to send data-->
     <form action="{{url_for('users.update', id = current_user.id)}}" method = "POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type = "hidden" name ="update_type" value = "update_profile_image"/>
         <Label id = "label" for = "upload_profile_img">Upload profile image:</Label>
-        <input type="file" class="form-control" id="upload_profile_img" name = "upload_profile_img" >
+        <input type="file" class="form-control" id="upload_profile_img" name = "upload_profile_img" ></br>
         <button type = "submit" class = "btn btn-info">Save</button>
     </form>
     

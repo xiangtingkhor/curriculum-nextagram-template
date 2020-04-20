@@ -1,7 +1,7 @@
 import boto3, botocore
 import os
 
-#to make connection with the amazon3 server
+#to make connection with the amazon s3 server
 s3 = boto3.client(
     "s3",
     aws_access_key_id = os.environ.get('AWS_KEY'),

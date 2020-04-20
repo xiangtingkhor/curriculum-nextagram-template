@@ -33,7 +33,7 @@ class User(UserMixin, BaseModel):
     name = pw.CharField(unique=False, null = False)
     email = pw.CharField(null = True)
     password = pw.TextField( null = True)
-    profile_img = pw.CharField( null = True)
+    profile_img = pw.CharField( null = False, default='default.jpg')
 
     @hybrid_property
     def profile_img_url(self):
