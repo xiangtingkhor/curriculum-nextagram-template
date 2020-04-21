@@ -43,6 +43,33 @@
             <button type = "submit" class = "btn btn-info">Upload Images</button>
         </form>
     
+        <button type = "submit" class = "btn btn-info" data-toggle = "modal" data-target="#follower-request-list">Follower Request {{current_user.follower_request|length}}</button>
+          <div class="modal fade" id="follower-request-list" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalScrollableTitle">Follower Request</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                  <div class="modal-body">
+                    {% for request in current_user.follower_request %}
+                      <form action="{{url_for('following.approve', id = request.id)}}" method = "POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <label >{{request.name}}</label>
+                        <input type = "submit" value = "Accept">
+                      </form>
+                    {% endfor %}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+
         <div class="card-deck">
             {% for image in current_user.images %}
             <div class = "col-sm-3">
@@ -87,7 +114,17 @@
             </div>
           </div>
     {% else %}
-        <p>This profile picture is private.</p>
+      {% if following_status and approval_status %}
+        <button type = "submit" class  = "btn btn-info" disabled = true>Following</button>
+      {% elif following_status and not approval_status %}
+        <button type = "submit" class  = "btn btn-info" disabled = true>Waiting for approval</button>
+      {% else %}
+        <form action="{{url_for('following.follow', id = user.id)}}", method = "POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <input type="hidden" name="profile_user_id" value="user.id"/>
+          <button type = "submit" class  = "btn btn-info">Follow</button>
+        </form>
+      {% endif %}
     {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -100,7 +137,6 @@
         let payment_form = document.getElementById('payment-form')
         let payload_input = document.getElementById('payload_nonce')
         braintree.dropin.create({
-          // tokenization key here
           authorization: '{{client_token}}',
           container: '#dropin-container'
         }, function (createErr, instance) {
@@ -115,8 +151,6 @@
           });
         });
       </script>
-    
-    
     
     {% endblock %} 
 </body>

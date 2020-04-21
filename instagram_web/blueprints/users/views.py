@@ -9,8 +9,6 @@ import os
 from decimal import Decimal
 from instagram_web.util.email import send_message
 
-
-
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
         braintree.Environment.Sandbox,

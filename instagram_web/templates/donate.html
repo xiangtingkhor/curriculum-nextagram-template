@@ -20,14 +20,11 @@
         var button = document.querySelector('#submit-button');
       
         braintree.dropin.create({
-          // Insert your tokenization key here
           authorization: '{{client_token}}',
           container: '#dropin-container'
         }, function (createErr, instance) {
           button.addEventListener('click', function () {
             instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
-              // When the user clicks on the 'Submit payment' button this code will send the
-              // encrypted payment information in a variable called a payment method nonce
               console.log(payload.nonce)
               $.ajax({
                 type: 'POST',
@@ -37,15 +34,12 @@
                         X_CSRF_TOKEN: "{{csrf_token()}}"
                     }
               }).done(function(result) {
-                //   console.log(result)
                   console.log(result.success)
-                  // Tear down the Drop-in UI
                 instance.teardown(function (teardownErr) {
                     if (teardownErr) {
                     console.error('Could not tear down Drop-in UI!');
                     } else {
                     console.info('Drop-in UI has been torn down!');
-                    // Remove the 'Submit payment' button
                     $('#submit-button').remove();
                     }
                 });
