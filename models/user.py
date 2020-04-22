@@ -43,6 +43,34 @@ class User(UserMixin, BaseModel):
         else:
             return app.config.get('AWS_S3_DOMAIN') + self.profile_img
 
+
+    @hybrid_property
+    def follower(self):
+        from models.following import Following
+        #SELECT * FROM user JOIN following ON user.id = following.follower_id
+        #WHERE following.user_id = 3
+
+        #because there's two columns that links to User which the SQLqueries will be confused
+        #thus when join following table need to specify which id you are refering to by using the on=
+        return User.select().join(Following, on =(User.id == Following.follower_id)).where(Following.idol_id == self.id)
+
+    @hybrid_property
+    def following(self):
+        from models.following import Following
+        #where(Following.follower_id) -> used follower_id as the follower is myself, I am the follower and I want to know who are the followers followed by me
+        return User.select().join(Following, on =(User.id == Following.idol_id)).where(Following.follower_id == self.id)
+
+
+    @hybrid_property
+    def approved(self):
+        from models.following import Following
+        return User.select().join(Following, on =(User.id == Following.idol_id)).where((Following.follower_id == self.id) & (Following.approved == True))
+
+    @hybrid_property
+    def follower_request(self):
+        from models.following import Following
+        return User.select().join(Following, on =(User.id == Following.follower_id)).where((Following.idol_id == self.id) & (Following.approved == False))    
+
     def validate(self):
         duplicate_name = User.get_or_none(User.name == self.name)
         check_name_length = len(self.name)

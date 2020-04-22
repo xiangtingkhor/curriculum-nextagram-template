@@ -9,4 +9,4 @@ class Following(BaseModel):
 
     def validate(self):
         if self.idol_id == self.follower_id:
-            self.errors.append('You cannot follow yourself.')
+            self.errors.append('Cannot follow self.')

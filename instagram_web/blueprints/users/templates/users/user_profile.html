@@ -75,7 +75,9 @@
             <div class = "col-sm-3">
                 <div class="card" >
                     <img src="{{image.img_url}}" class="card-img-top" alt="..." >
-                    <button id = "donate" class = "btn btn-info" data-toggle="modal" data-target="#exampleModalScrollable">Donate</button>
+                    {% if not current_user.name == user.name %}
+                      <button id = "donate" class = "btn btn-info" data-toggle="modal" data-target="#exampleModalScrollable">Donate</button>
+                    {% endif %}
                   </div>
             </div>      
             {% endfor %}
@@ -124,6 +126,7 @@
           <input type="hidden" name="profile_user_id" value="user.id"/>
           <button type = "submit" class  = "btn btn-info">Follow</button>
         </form>
+        <p>This profile picture is private.</p>
       {% endif %}
     {% endif %}
 
