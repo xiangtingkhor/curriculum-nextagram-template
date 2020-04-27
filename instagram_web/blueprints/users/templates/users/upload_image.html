@@ -9,10 +9,10 @@
     {% extends "_layout.html" %}
    
     {% block content %}
-    <h1>
-        Upload Profile Page
-    </h1>
-    <h3>Current name : {{current_user.name}} </h3> </br>
+    <h2>
+        Profile Image Update
+    </h2>
+    <h3>{{current_user.name|title}} </h3> </br>
     
 <!--enctype is needed to tell the form how to send data-->
     <form action="{{url_for('users.update', id = current_user.id)}}" method = "POST" enctype="multipart/form-data">
@@ -20,7 +20,7 @@
         <input type = "hidden" name ="update_type" value = "update_profile_image"/>
         <Label id = "label" for = "upload_profile_img">Upload profile image:</Label>
         <input type="file" class="form-control" id="upload_profile_img" name = "upload_profile_img" ></br>
-        <button type = "submit" class = "btn btn-info">Save</button>
+        <button type = "submit" class = "btn btn-warning">Save</button>
     </form>
     
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
